@@ -7,7 +7,8 @@ let multipartMiddleware = multipart();
 const csv = require('csvtojson');
 
 api.post("/upload",multipartMiddleware, async function(req, res){
-    let datos = await csv().fromFile(req.files.null.path);
+    console.log(req.files)
+    let datos = await csv().fromFile(req.files.csv.path);
     res.status(200).send(datos);
 })
 
