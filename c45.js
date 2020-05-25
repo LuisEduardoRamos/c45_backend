@@ -1,7 +1,6 @@
 const csv = require('csvtojson');
 const _ = require('lodash');
 let iteracion = 0;
-let arbolArray = [];
 let iteracionArray = [];
 let iteracionObject = new Object();
 let entropiasArray = [];
@@ -42,9 +41,68 @@ function agruparDatos(datos){
     }));
 }
 
-function c45(){
+function c45(dataset, claseDecision){
+    iteracionObject = {};        
+    iteracion+=1;
+    let entropiaMenor = 1;
+    let entropiaGo = calcularEntropia(dataset, claseDecision);
+    let claseSeleccionada = '';
+    let data = agruparDatos(dataset);
+    let total = dataset.length;
+    let entropias = [];
+    const clases = Object.keys(dataset[0]);
+    iteracionObject.iteracion = iteracion;
+    iteracionObject.entropiaGlobal = entropiaGo;
+    if(relacionTemporal){
+        iteracionObject.relacion = relacionTemporal;
+        relacionTemporal = null;
+    }
+    for (let i = 0; i < data.length; i++) {
+        const nombreClase = clases[i];
+        if (nombreClase === claseDecision)break;
+        const clase = data[i];
+        const dataClase  = clase[nombreClase];
+        const opciones = Object.keys(dataClase);
+        let entropiaParcial = 0;
+        //Sumarización
+        for (let j = 0; j < opciones.length; j++) {
+            let sub = dataClase[opciones[j]];
+            let entropySub = calcularEntropia(sub, claseDecision);
+            let x = (sub.length/total) * entropySub;
+            entropiaParcial += x;
+            if(entropiaGo == 0) {
+                let hoja = sub[0];
+                iteracionObject.desicionFinal = hoja[claseDecision];
+                console.log('se termina');
+                return;
+            }
+        }
+        entropiasArray.push({clase: nombreClase, entropia: entropiaParcial});
+        if(entropiaParcial < entropiaMenor){
+            entropiaMenor = entropiaParcial;
+            claseSeleccionada = nombreClase;
+        }
+        let entropiaObject = {[nombreClase]:entropiaParcial};
+        entropias.push(entropiaObject);
+    }
+    const index = clases.indexOf(claseSeleccionada);
+    const dataSelecArray = data.splice(index, 1);
+    const dataSelecObj = dataSelecArray[0];
+    const dataSelecKeys = Object.keys(dataSelecObj[claseSeleccionada]);
+    const dataSelec = dataSelecObj[claseSeleccionada];
+    iteracionObject.hijosGanadora = dataSelecKeys;
+    iteracionObject.entropias = entropiasArray;
+    entropiasArray = [];
+    for (let i = 0; i < dataSelecKeys.length; i++) {
+        let datosNuevos = dataSelec[dataSelecKeys[i]]
+        relacionTemporal = dataSelecKeys[i] + ' -(hijo)-> ' + claseSeleccionada;
+        iteracionObject.claseGanadora = claseSeleccionada;
+        iteracionArray.push(iteracionObject);
+        c45(datosNuevos, claseDecision);
+    }
 
 }
+
 
 function print(title, body){console.log(title+': '+body);}
 
