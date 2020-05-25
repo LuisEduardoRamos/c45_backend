@@ -12,4 +12,8 @@ api.post("/upload",multipartMiddleware, async function(req, res){
     res.status(200).send(datos);
 })
 
+api.get('/c45', async function(req, res){
+    console.log(req.body)
+})
+
 module.exports = api;
