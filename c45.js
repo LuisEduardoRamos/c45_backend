@@ -32,3 +32,25 @@ function calcularEntropia(datos, clase){
 function entropia(relacion){
     return ((relacion) * Math.log2(relacion) * -1);
 }
+
+
+function agruparDatos(datos){
+    //Se extren las cabeceras del csv, en este caso pasan a ser las llaves del objeto
+    let cabeceras = Object.keys(datos[0]);
+    return cabeceras.map((cabecera)=>({
+       [cabecera]: _.groupBy(datos, cabecera)
+    }));
+}
+
+function c45(){
+
+}
+
+function print(title, body){console.log(title+': '+body);}
+
+async function main(ruta, claseDecision){
+    //Se obtienen los datos del csv y se parsean a JSON
+    let json = await csv().fromFile(ruta);
+    c45(json, claseDecision);
+    console.log(iteracionArray)
+}
