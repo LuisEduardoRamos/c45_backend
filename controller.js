@@ -9,7 +9,8 @@ const c45 = require('./c45');
 api.post("/upload",multipartMiddleware, async function(req, res){
     console.log(req.files);
     let datos = await csv().fromFile(req.files.csv.path);
-    res.status(200).send(datos);
+    let clases = Object.keys(datos[0]);
+    res.status(200).send({datos, clases});
 })
 
 api.post('/c45', async function(req, res){

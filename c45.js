@@ -1,7 +1,5 @@
-const csv = require('csvtojson');
 const _ = require('lodash');
 let iteracion = 0;
-let arbolArray = [];
 let iteracionArray = [];
 let iteracionObject = new Object();
 let entropiasArray = [];
@@ -107,7 +105,7 @@ function print(title, body){console.log(title+': '+body);}
 module.exports = async (json, claseDecision) => {
     //Se obtienen los datos del csv y se parsean a JSON
     c45(json, claseDecision);
-    return iteracionArray;
+    return (iteracionArray);
 }
 
 //main('datos/datosArbol-3.csv','Decision');
